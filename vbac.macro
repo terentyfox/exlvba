@@ -1,0 +1,49 @@
+
+Sub CountTestSheet(sht As String, i As Long)
+'Cчитает количество строк до первого пустого значения в столбце A/
+    
+    Worksheets(sht).Activate
+    Range("A1").Activate
+    Do Until IsEmpty(ActiveCell)
+        ActiveCell.Offset(1, 0).Select
+        i = i + 1
+    Loop
+End Sub
+Sub TestColumnAinSMRisInstrColumnDinHDD()
+Dim k As Long, m As Long
+Dim ClIn As String, FoundCh As Boolean
+'Макрос ищет в столбце D листа HDD подстрочные вхождения значений из листа smr, столбец A
+'Если значение в солбце D содержит подстроку, совпадающую с одним из значений столбца A, то в столбце L листа HDD проставляется Истина, иначе Ложь
+'Оба столбца не должны иметь пустых значений, пустое значение - признак конца списка.
+
+
+    k = 0
+    ClIn = "smr"
+       
+    Call CountTestSheet(ClIn, k)
+    
+    Worksheets("HDD").Activate
+    Range("D1").Activate
+    
+    Do Until IsEmpty(ActiveCell)
+        FoundCh = False
+    
+        For m = 1 To k
+            FoundCh = InStr(1, ActiveCell, Worksheets(ClIn).Range("A" & CStr(m))) > 0
+            
+            If FoundCh Then
+                m = k
+            End If
+            
+        Next m
+        ActiveCell.Offset(0, 8).Select
+        ActiveCell = FoundCh
+        ActiveCell.Offset(1, -8).Select
+        
+        
+      
+    Loop
+    
+
+
+End Sub
